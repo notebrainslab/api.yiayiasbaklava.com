@@ -69,6 +69,7 @@ class SuperDao {
     async updateById(data, id) {
         return this.Model.update(data, { where: { id } })
             .then((result) => {
+                console.log(result);
                 return result;
             })
             .catch((e) => {
@@ -118,7 +119,7 @@ class SuperDao {
             offset,
         });
     }
-
+    
     async deleteByWhere(where) {
         return this.Model.destroy({ where });
     }

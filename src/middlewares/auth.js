@@ -13,21 +13,35 @@ const verifyCallback = (req, res, resolve, reject) => {
     };
 };
 
+// const auth = () => {
+//     return async (req, res, next) => {
+//         return new Promise((resolve, reject) => {
+//             passport.authenticate(
+//                 'jwt',
+//                 { session: false },
+//                 verifyCallback(req, res, resolve, reject),
+//             )(req, res, next);
+//         })
+//             .then(() => {
+//                 return next();
+//             })
+//             .catch((err) => {
+//                 return next(err);
+//             });
+//     };
+// };
+
 const auth = () => {
     return async (req, res, next) => {
-        return new Promise((resolve, reject) => {
-            passport.authenticate(
-                'jwt',
-                { session: false },
-                verifyCallback(req, res, resolve, reject),
-            )(req, res, next);
-        })
-            .then(() => {
-                return next();
-            })
-            .catch((err) => {
-                return next(err);
-            });
+        passport.authenticate('jwt', { session: false }, (err, user) => {
+            if (err || !user) {
+                return res.status(401).json({ message: 'Unauthorized' });
+            }
+            
+            req.userId = user.id;
+                    
+            next();
+        })(req, res, next);
     };
 };
 

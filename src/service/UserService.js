@@ -52,6 +52,36 @@ class UserService {
         }
     };
 
+    updateUser = async (userBody, id) => {
+        try {
+            let message = 'Profile updated successfully!';                    
+            userBody.name = userBody.name;
+            userBody.email = userBody.email;            
+            userBody.phone = userBody.phone;
+                        
+            let userInfo = await this.userDao.updateById(userBody, id);
+                      
+            if (!userInfo) {
+                message = 'Failed to update! Please Try again.';
+                return responseHandler.returnError(httpStatus.BAD_REQUEST, message);
+            }
+            
+            userInfo = await this.userDao.findById(id);
+            userInfo = userInfo.toJSON();
+            delete userInfo.password;
+            delete userInfo.email_verified_at;
+            delete userInfo.deletedAt;
+            delete userInfo.gender;
+            delete userInfo.birthday;
+
+            return responseHandler.returnSuccess(httpStatus.CREATED, message, userInfo);
+        } catch (e) {
+            console.log(e);
+            logger.error(e);
+            return responseHandler.returnError(httpStatus.BAD_REQUEST, 'Something went wrong!');
+        }
+    };
+
     /**
      * Get user
      * @param {String} email
