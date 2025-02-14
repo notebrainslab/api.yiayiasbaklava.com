@@ -6,8 +6,6 @@ const models = require('../models');
 const WeeklyShowcase = models.weekly_showcases;
 const Product = models.shop_products;
 
-// const Customer = models.customer;
-
 class WeeklyShowcaseDao extends SuperDao {
     constructor() {
         super(WeeklyShowcase, Product);        
