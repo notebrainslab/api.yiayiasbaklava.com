@@ -14,7 +14,7 @@ router.post(
 
 router.get(
     '/select-flavours',
-    // auth(),    
+    auth(),    
     productController.selectFlavours,
 );
 

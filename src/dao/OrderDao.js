@@ -3,37 +3,34 @@ const { Op, Sequelize } = require('sequelize');
 const models = require('../models');
 
 const Order = models.shop_orders;
+const Product = models.shop_products;
 
 class OrderDao extends SuperDao {
     constructor() {
-        super(Order);       
+        super(Order, Product);       
     } 
     
-    async fetchOrdersWithTotalAmount(whereCondition) {
-        try {            
+    async fetchOrdersWithTotalAmount(userId) {
+        try {   
+
             const results = await Order.findAll({
+                where: { shop_customer_id : userId},
+                include: {
+                    model: Product,
+                    through: { attributes: [] }, // Hide the join table
+                    attributes: ['id', 'name', 'price']
+                },
                 attributes: [
                     'id',
                     'number',
+                    'status',
                     'created_at',
-                    [Sequelize.fn('SUM', Sequelize.literal('`shop_order_items`.`qty` * `shop_order_items`.`unit_price`')), 'total_amount']
+                    'updated_at',
+                    [Sequelize.literal('(SELECT SUM(qty * unit_price) FROM shop_order_items WHERE shop_order_items.shop_order_id = shop_orders.id)'), 'total_amount']
                 ],
-
-                include: [
-                    {
-                        model: shop_order_items,
-                        attributes: [],
-                    }
-                ],
-
-                where: whereCondition,
-                group: ['shop_orders.id'],                         
+                order: [['id', 'DESC']]             
             });
-
-            if (!results.length) {
-                return { message: 'No Orders found!' };
-            }
-
+            
             return results;           
         } catch (error) {
             console.error('Error fetching with relation:', error);

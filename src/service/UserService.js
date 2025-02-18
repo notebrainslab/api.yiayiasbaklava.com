@@ -101,7 +101,7 @@ class UserService {
     };
 
     changePassword = async (data, uuid) => {
-        let message = 'Login Successful';
+        let message = 'Successfully updated password';
         let statusCode = httpStatus.OK;
         let user = await this.userDao.findOneByWhere({ uuid });
 

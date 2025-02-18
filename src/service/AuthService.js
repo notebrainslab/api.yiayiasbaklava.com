@@ -85,7 +85,9 @@ class AuthService {
         return true;
     };
 
-    deleteAccount = async (req, res) => {           
+    deleteAccount = async (req, res) => {  
+        res.send('abgg');
+        return false;         
         const refreshTokenDoc = await this.tokenDao.findOne({
             token: req.body.refresh_token,
             type: tokenTypes.REFRESH,
@@ -93,7 +95,10 @@ class AuthService {
         });
         
         if (!refreshTokenDoc) {
-            return false;
+            return responseHandler.returnError(
+                httpStatus.BAD_REQUEST,
+                'Invalid refresh token!',
+            );
         }
                         
         await this.tokenDao.remove({

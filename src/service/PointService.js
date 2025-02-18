@@ -1,14 +1,14 @@
 const httpStatus = require('http-status');
 const { Op } = require('sequelize');
-const OrderDao = require('../dao/OrderDao');
+const PointDao = require('../dao/PointDao');
 // const TokenDao = require('../dao/TokenDao');
 const { tokenTypes } = require('../config/tokens');
 const responseHandler = require('../helper/responseHandler');
 const logger = require('../config/logger');
 
-class OrderService {
+class PointService {
     constructor() {
-        this.orderDao = new OrderDao();                  
+        this.pointDao = new PointDao();                  
     }
     /**
      * Create a user
@@ -17,14 +17,13 @@ class OrderService {
      * @returns {Promise<{response: {code: *, message: *, status: boolean}, statusCode: *}>}
      */
 
-    fetchOrderHistory = async (userId) => { 
+    fetchPointHistory = async (userId) => { 
         try{
-            const message = 'Data fetch successfully!';            
-            // const currentDate = new Date();
-                          
-            let orderHistoryData = await this.orderDao.fetchOrdersWithTotalAmount(userId); 
+            const message = 'Data fetch successfully!';                        
+                                         
+            let pointHistoryData = await this.pointDao.fetchPointThroughOrder(userId); 
                                                               
-            return responseHandler.returnSuccess(httpStatus.OK, message, orderHistoryData);
+            return responseHandler.returnSuccess(httpStatus.OK, message, pointHistoryData);
         }
         catch (e) {
             console.log(e);
@@ -38,4 +37,4 @@ class OrderService {
 
 }
 
-module.exports = OrderService;
+module.exports = PointService;

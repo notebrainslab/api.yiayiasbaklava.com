@@ -8,7 +8,7 @@ const categoryController = new CategoryController();
 
 router.get(
     '/product-list-category-wise',
-    // auth(),    
+    auth(),    
     categoryController.fetchCategoryWiseProduct,
 );
 

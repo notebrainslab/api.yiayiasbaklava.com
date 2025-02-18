@@ -20,12 +20,7 @@ class CategoryService {
     fetchCategoryWithProduct = async () => { 
         try{
             const message = 'Data fetch successfully!';            
-            // const currentDate = new Date();
             
-            // const whereCondition = {
-            //     from_date: { [Op.lte]: currentDate },
-            //     to_date: { [Op.gte]: currentDate }
-            // };         
             let productData = await this.CategoryDao.fetchCategoryWithProductRelation(); 
                                                               
             return responseHandler.returnSuccess(httpStatus.OK, message, productData);
