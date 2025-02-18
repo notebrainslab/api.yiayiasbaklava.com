@@ -12,7 +12,6 @@ class OrderDao extends SuperDao {
     
     async fetchOrdersWithTotalAmount(userId) {
         try {   
-
             const results = await Order.findAll({
                 where: { shop_customer_id : userId},
                 include: {

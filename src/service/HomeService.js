@@ -26,7 +26,8 @@ class HomeService {
             const whereCondition = {
                 from_date: { [Op.lte]: currentDate },
                 to_date: { [Op.gte]: currentDate }
-            };         
+            };
+                     
             let homeData = await this.WeeklyShowcaseDao.fetchWithRelation(whereCondition); 
                                                             
             return responseHandler.returnSuccess(httpStatus.OK, message, homeData);

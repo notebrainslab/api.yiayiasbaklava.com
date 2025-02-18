@@ -12,4 +12,16 @@ router.get(
     pointController.fetchPointHistory,
 );
 
+router.get(
+    '/membership-tier',
+    auth(),    
+    pointController.fetchMembershipTier,
+);
+
+router.get(
+    '/leaderboard',
+    // auth(),    
+    pointController.fetchLeaderboard,
+);
+
 module.exports = router;
