@@ -6,7 +6,7 @@ const auth = require('../middlewares/auth');
 
 const storeLocationController = new StoreLocationController();
 
-router.get(
+router.post(
     '/store-locations',
     // auth(),    
     storeLocationController.fetchStoreLocations,

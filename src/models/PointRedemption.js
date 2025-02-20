@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
-            // Point.belongsTo(models.shop_orders, { foreignKey: 'order_id' });
+          PointRedemption.belongsTo(models.shop_orders, { foreignKey: 'order_id' });
             // define association here
             // User.belongsTo(models.agency, { foreignKey: 'agency_id', targetKey: 'id' });
         }

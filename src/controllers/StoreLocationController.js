@@ -15,8 +15,9 @@ class StoreLocationController {
     }
    
     fetchStoreLocations= async (req, res) => {
-        try {              
-            const StoreLocations = await this.storeLocationService.fetchStoreLocations(); 
+        try {  
+            const input = req.body;            
+            const StoreLocations = await this.storeLocationService.fetchStoreLocations(input); 
             
             const { status } = StoreLocations.response;            
             const { message, data } = StoreLocations.response;

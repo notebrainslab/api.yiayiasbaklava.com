@@ -12,4 +12,16 @@ router.get(
     orderController.fetchOrderHistory,
 );
 
+router.post(
+    '/add-review',
+    auth(),    
+    orderController.addReview,
+);
+
+router.post(
+    '/coupon-list',
+    auth(),    
+    orderController.couponList,
+);
+
 module.exports = router;

@@ -40,8 +40,47 @@ class HomeService {
         
     };
 
-    
+    fetchCms = async () => { 
+        try{
+            const message = 'Data fetch successfully!';
 
-}
+            let cmsData = {};
+            cmsData.privacy_policy = {
+                title : "Privacy Policy",
+                value : "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries"
+            };
+
+            cmsData.terms_condition = {
+                title : "Terms and Conditions",
+                value : "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries"
+            };
+                                                                                    
+            return responseHandler.returnSuccess(httpStatus.OK, message, cmsData);
+        }
+        catch (e) {
+            console.log(e);
+            logger.error(e);
+            return responseHandler.returnError(httpStatus.BAD_REQUEST, 'Something went wrong!');
+        }
+        
+    };
+
+    fetchSupportContent = async () => { 
+        try{
+            const message = 'Data fetch successfully!';         
+                                             
+            let homeData = await this.WeeklyShowcaseDao.fetchWithRelation(whereCondition); 
+                                                            
+            return responseHandler.returnSuccess(httpStatus.OK, message, homeData);
+        }
+        catch (e) {
+            console.log(e);
+            logger.error(e);
+            return responseHandler.returnError(httpStatus.BAD_REQUEST, 'Something went wrong!');
+        }
+        
+    };
+
+}  
 
 module.exports = HomeService;

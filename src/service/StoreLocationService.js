@@ -18,12 +18,22 @@ class StoreLocationService {
      * @returns {Promise<{response: {code: *, message: *, status: boolean}, statusCode: *}>}
      */
 
-    fetchStoreLocations = async () => { 
+    fetchStoreLocations = async (input) => { 
         try{
             const message = 'Data fetch successfully!';                        
-                                     
+            const search = input.search; 
+            
+            const whereCondition = { status: 1 };
+
+            if (search) {
+                whereCondition[Op.or] = [
+                    { name: { [Op.like]: `%${search}%` } },
+                    { address: { [Op.like]: `%${search}%` } }
+                ];
+            }
+            
             let locationData = await this.storeLocationDao.findByWhere(
-                { status : 1} 
+                whereCondition   
             ); 
 
             let transformData = transFormDataHelper.TransformData(locationData);
@@ -34,12 +44,9 @@ class StoreLocationService {
             console.log(e);
             logger.error(e);
             return responseHandler.returnError(httpStatus.BAD_REQUEST, 'Something went wrong!');
-        }
-        
+        }        
     };
-
     
-
 }
 
 module.exports = StoreLocationService;

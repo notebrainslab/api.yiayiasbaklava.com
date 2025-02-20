@@ -37,6 +37,18 @@ class OrderDao extends SuperDao {
         }
     }
     
+    async isValidOrder(orderId, userId) {
+        try {   
+            const result = await Order.findOne(
+                {where: { shop_customer_id : userId, id: orderId }}                 
+            );
+            
+            return !!result;        
+        } catch (error) {
+            console.error('Error fetching with relation:', error);
+            throw error;
+        }
+    }
 }
 
 module.exports = OrderDao;

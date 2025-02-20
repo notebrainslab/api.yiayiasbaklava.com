@@ -101,6 +101,24 @@ class WeeklyShowcaseDao extends SuperDao {
             throw error;
         }
     }
+
+    async fetchCurrentWeekData() {
+        try {
+            const currentDate = moment().format('YYYY-MM-DD');
+            const result = await WeeklyShowcase.findOne({
+                where: {
+                    from_date: { [Op.lte]: currentDate },
+                    to_date: { [Op.gte]: currentDate },
+                    status: 1
+                },                
+            });
+
+            return result;
+        } catch (error) {
+            console.error('Error fetching with relation:', error);
+            throw error;
+        }
+    }    
     
 }
 

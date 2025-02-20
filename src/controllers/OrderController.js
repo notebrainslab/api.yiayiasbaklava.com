@@ -28,6 +28,38 @@ class OrderController {
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
+
+    addReview = async (req, res) => {
+        try {   
+            const reviewData = req.body;          
+            const addReview = await this.orderService.addReview(reviewData, req.userId); 
+            
+            const { status } = addReview.response;            
+            const { message } = addReview.response;
+            
+            res.status(addReview.statusCode).send({ status, message });
+        } catch (e) {
+            console.log(e)
+            logger.error(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    };
+
+    couponList = async (req, res) => {
+        try { 
+            const couponBody = req.body;               
+            const couponList = await this.orderService.couponList(couponBody);           
+            
+            const { status } = couponList.response;            
+            const { message, data } = couponList.response;
+            
+            res.status(couponList.statusCode).send({ status, message, data });
+        } catch (e) {
+            console.log(e)
+            logger.error(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    };
 }
 
 module.exports = OrderController;

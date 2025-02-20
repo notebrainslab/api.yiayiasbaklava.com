@@ -58,6 +58,22 @@ class PointController{
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
+
+    productVote = async (req, res) => {
+        try {  
+            const voteData = req.body;           
+            const ProductVote = await this.pointService.productVote(voteData, req.userId ); 
+            
+            const { status } = ProductVote.response;            
+            const { message } = ProductVote.response;
+            
+            res.status(ProductVote.statusCode).send({ status, message });
+        } catch (e) {
+            console.log(e)
+            logger.error(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    };
 }
 
 module.exports = PointController;

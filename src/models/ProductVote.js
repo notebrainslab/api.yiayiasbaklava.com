@@ -9,9 +9,9 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             ProductVote.belongsTo(models.shop_products, { 
-                foreignKey: 'product_id', 
-                targetKey: 'id' 
-              });
+              foreignKey: 'product_id', 
+              targetKey: 'id' 
+            });
             // define association here
             // User.belongsTo(models.agency, { foreignKey: 'agency_id', targetKey: 'id' });
         }

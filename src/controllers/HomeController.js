@@ -28,6 +28,31 @@ class HomeController {
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
+
+    fetchCms = async (req, res) => {
+        try {              
+            const CmsData = await this.homeService.fetchCms(); 
+            
+            const { status } = CmsData.response;            
+            const { message, data } = CmsData.response;
+            
+            res.status(CmsData.statusCode).send({ status, message, data });
+        } catch (e) {
+            console.log(e)
+            logger.error(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    };
+
+    fetchSupportContent = async (req, res) => {
+        try {              
+                        
+        } catch (e) {
+            console.log(e)
+            logger.error(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    };
 }
 
 module.exports = HomeController;

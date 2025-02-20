@@ -12,4 +12,16 @@ router.get(
     homeController.fetchHomeData,
 );
 
+router.get(
+    '/cms',
+    // auth(),    
+    homeController.fetchCms,
+);
+
+router.get(
+    '/support',
+    // auth(),    
+    homeController.fetchSupportContent,
+);
+
 module.exports = router;
