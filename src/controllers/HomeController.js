@@ -44,9 +44,14 @@ class HomeController {
         }
     };
 
-    fetchSupportContent = async (req, res) => {
+    fetchSupportContent = async (req, res) => { 
         try {              
-                        
+            const supportData = await this.homeService.fetchSupportContent();
+          
+            const { status } = supportData.response;            
+            const { message, data } = supportData.response;
+            
+            res.status(supportData.statusCode).send({ status, message, data });
         } catch (e) {
             console.log(e)
             logger.error(e);

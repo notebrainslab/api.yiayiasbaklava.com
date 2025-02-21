@@ -1,15 +1,20 @@
 const httpStatus = require('http-status');
 const { Op } = require('sequelize');
 const WeeklyShowcaseDao = require('../dao/WeeklyShowcaseDao');
+const SupportDao = require('../dao/SupportDao');
+const MasterSettingDao = require('../dao/MasterSettingDao');
 // const TokenDao = require('../dao/TokenDao');
 const { tokenTypes } = require('../config/tokens');
 const responseHandler = require('../helper/responseHandler');
 const logger = require('../config/logger');
 const UserService = require('./UserService');
+const transFormDataHelper = require('../helper/transFormDataHelper');
 
 class HomeService {
     constructor() {
         this.WeeklyShowcaseDao = new WeeklyShowcaseDao();                  
+        this.supportDao = new SupportDao();                  
+        this.masterSettingDao = new MasterSettingDao();                  
     }
     /**
      * Create a user
@@ -67,11 +72,28 @@ class HomeService {
 
     fetchSupportContent = async () => { 
         try{
-            const message = 'Data fetch successfully!';         
-                                             
-            let homeData = await this.WeeklyShowcaseDao.fetchWithRelation(whereCondition); 
-                                                            
-            return responseHandler.returnSuccess(httpStatus.OK, message, homeData);
+            const message = 'Data fetch successfully!';     
+            const whereCondition = {
+                is_active : 1
+            }  
+
+            let supoortContent = {};
+            
+            let contactDetails = await this.masterSettingDao.fetchMasterSettingsData();
+            
+            let supportData = await this.supportDao.findByWhere(whereCondition);
+                    
+            let transformData = transFormDataHelper.TransformData(supportData);
+
+            supoortContent.faq = transformData;
+            supoortContent.contact_us = 
+            {
+               customer_service : contactDetails.phoneNumber, 
+               email : contactDetails.emailAddress,
+               website : ''
+            };        
+            
+            return responseHandler.returnSuccess(httpStatus.OK, message, supoortContent);
         }
         catch (e) {
             console.log(e);

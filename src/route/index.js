@@ -9,6 +9,7 @@ const cartRoute = require('./cartRoute');
 const pointRoute = require('./pointRoute');
 const storeLocationRoute = require('./storeLocationRoute');
 const walletRoute = require('./walletRoute');
+const addressRoute = require('./addressRoute');
 
 const router = express.Router();
 
@@ -32,5 +33,6 @@ router.use(cartRoute);
 router.use(pointRoute);
 router.use(storeLocationRoute);
 router.use(walletRoute);
+router.use(addressRoute);
 
 module.exports = router;
