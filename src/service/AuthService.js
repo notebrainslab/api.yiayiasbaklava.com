@@ -6,12 +6,14 @@ const { tokenTypes } = require('../config/tokens');
 const responseHandler = require('../helper/responseHandler');
 const logger = require('../config/logger');
 const RedisService = require('./RedisService');
+const UserService = require('./UserService');
 
 class AuthService {
     constructor() {
         this.userDao = new UserDao();
         this.tokenDao = new TokenDao();
         this.redisService = new RedisService();
+        this.userService = new UserService();
     }
 
     /**
@@ -83,15 +85,22 @@ class AuthService {
         return true;
     };
 
-    deleteAccount = async (req, res) => {        
+    deleteAccount = async (req, res) => {  
+        res.send('abgg');
+        return false;         
         const refreshTokenDoc = await this.tokenDao.findOne({
             token: req.body.refresh_token,
             type: tokenTypes.REFRESH,
             blacklisted: false,
         });
+        
         if (!refreshTokenDoc) {
-            return false;
+            return responseHandler.returnError(
+                httpStatus.BAD_REQUEST,
+                'Invalid refresh token!',
+            );
         }
+                        
         await this.tokenDao.remove({
             token: req.body.refresh_token,
             type: tokenTypes.REFRESH,
@@ -99,17 +108,9 @@ class AuthService {
         });
 
         await this.userDao.delete({
-            token: req.body.refresh_token,
-            type: tokenTypes.REFRESH,
-            blacklisted: false,
+            uuid: refreshTokenDoc.user_uuid
         });
-        // await this.tokenDao.remove({
-        //     token: req.body.access_token,
-        //     type: tokenTypes.ACCESS,
-        //     blacklisted: false,
-        // });
-        //await this.redisService.removeToken(req.body.access_token, 'access_token');
-        //await this.redisService.removeToken(req.body.refresh_token, 'refresh_token');
+              
         return true;
     };
 

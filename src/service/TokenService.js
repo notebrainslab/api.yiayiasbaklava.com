@@ -52,7 +52,7 @@ class TokenService {
         }
         return tokenDoc;
     };
-
+    
     /**
      * Save a token
      * @param {string} token

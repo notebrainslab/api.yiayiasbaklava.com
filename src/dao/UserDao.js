@@ -26,8 +26,9 @@ class UserDao extends SuperDao {
         return User.create(user, { transaction });
     }
 
-    async delete() {
-        return User.findOne({ where: { email } });
+    async delete(id) {        
+       await User.destroy({ where: id });    
+       return true;
     }
 }
 

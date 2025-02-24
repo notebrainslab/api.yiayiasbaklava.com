@@ -62,7 +62,7 @@ class AuthController {
         }
     };
 
-    logout = async (req, res) => {
+    logout = async (req, res) => {        
         await this.authService.logout(req, res);          
         res.status(httpStatus.NO_CONTENT).send();
     };
@@ -107,7 +107,7 @@ class AuthController {
     };
 
     deleteAccount = async (req, res) => {
-        try {
+        try {                        
             await this.authService.deleteAccount(req, res);          
             res.status(httpStatus.NO_CONTENT).send();           
         } catch (e) {
