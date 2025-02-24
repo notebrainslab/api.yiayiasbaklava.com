@@ -11,7 +11,7 @@ const returnError = (statusCode, message) => {
     return {
         statusCode,
         response: {
-            status: false,
+            status: 0,
             code: statusCode,
             message,
         },
@@ -21,7 +21,7 @@ const returnSuccess = (statusCode, message, data = {}) => {
     return {
         statusCode,
         response: {
-            status: true,
+            status: 1,
             code: statusCode,
             message,
             data,

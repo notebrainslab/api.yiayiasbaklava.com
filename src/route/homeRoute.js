@@ -8,7 +8,7 @@ const homeController = new HomeController();
 
 router.get(
     '/home',
-    auth(),    
+    // auth(),    
     homeController.fetchHomeData,
 );
 

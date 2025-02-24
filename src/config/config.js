@@ -7,10 +7,10 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 const envValidation = Joi.object()
     .keys({
         NODE_ENV: Joi.string().valid('development', 'production', 'test').required(),
-        PORT: Joi.number().default(3000),
-        DB_HOST: Joi.string().default('localhost'),
+        PORT: Joi.number(),
+        DB_HOST: Joi.string().required(),
         DB_USER: Joi.string().required(),
-        DB_PASS: Joi.string().allow('').default(''),
+        DB_PASS: Joi.string().required(),
         DB_NAME: Joi.string().required(),
         JWT_SECRET: Joi.string().required().description('JWT secret key'),
         JWT_ACCESS_EXPIRATION_MINUTES: Joi.number()
