@@ -14,16 +14,16 @@ const envValidation = Joi.object()
         DB_NAME: Joi.string().required(),
         JWT_SECRET: Joi.string().required().description('JWT secret key'),
         JWT_ACCESS_EXPIRATION_MINUTES: Joi.number()
-            .default(30)
+            .default(1000)
             .description('minutes after which access tokens expire'),
         JWT_REFRESH_EXPIRATION_DAYS: Joi.number()
-            .default(30)
+            .default(1000)
             .description('days after which refresh tokens expire'),
         JWT_RESET_PASSWORD_EXPIRATION_MINUTES: Joi.number()
-            .default(10)
+            .default(1000)
             .description('minutes after which reset password token expires'),
         JWT_VERIFY_EMAIL_EXPIRATION_MINUTES: Joi.number()
-            .default(10)
+            .default(1000)
             .description('minutes after which verify email token expires'),
         LOG_FOLDER: Joi.string().required(),
         LOG_FILE: Joi.string().required(),

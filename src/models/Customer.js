@@ -25,12 +25,15 @@ module.exports = (sequelize, DataTypes) => {
             phone: DataTypes.STRING,
             birthday: DataTypes.DATE,                        
             is_active: DataTypes.TINYINT,                        
-            password: DataTypes.INTEGER,                        
+            password: DataTypes.INTEGER, 
+            deletedAt: DataTypes.DATE                       
         },
         {
             sequelize,
             modelName: 'shop_customers',
+            paranoid: true, 
             underscored: true,
+            timestamps: true,
         },
     );
     return Customer;

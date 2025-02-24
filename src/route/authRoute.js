@@ -16,14 +16,14 @@ router.post('/logout', authController.logout);
 router.post('/forget-password', authController.forgetPassword);
 router.put(
     '/reset-password',
-    // auth(),
+    auth(),
     userValidator.changePasswordValidator,
     authController.changePassword,
 );
 
 router.post(
     '/delete-account',
-    auth(),    
+    // auth(),      
     authController.deleteAccount,
 );
 

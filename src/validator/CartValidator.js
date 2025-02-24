@@ -2,15 +2,27 @@ const Joi = require('joi');
 const httpStatus = require('http-status');
 const ApiError = require('../helper/ApiError');
 
-class UserValidator {
-    async userCreateValidator(req, res, next) {
+class CartValidator {
+    async addToCartValidator(req, res, next) {
         // create schema object
         const schema = Joi.object({
-            email: Joi.string().email().required(),
-            phone: Joi.string().required(),
-            password: Joi.string().min(6).required(),
-            confirm_password: Joi.string().valid(Joi.ref('password')).required(),           
-            name: Joi.string().required(),
+            product_id: Joi.number()
+                .integer()
+                .required()
+                .messages({
+                    'number.base': 'Product ID must be a number.',
+                    'number.integer': 'Product ID must be an integer.',
+                    'any.required': 'Product ID is required.',
+                }),
+
+            quantity: Joi.number()
+                .integer()
+                .required()
+                .messages({
+                    'number.base': 'Quantity must be a number.',
+                    'number.integer': 'Quantity must be an integer.',
+                    'any.required': 'Quantity is required.',
+                }),            
         });
 
         // schema options
@@ -38,11 +50,19 @@ class UserValidator {
         }
     }
 
-    async userLoginValidator(req, res, next) {
+    async removeFromCartValidator(req, res, next) {
         // create schema object
         const schema = Joi.object({
-            email: Joi.string().email().required(),
-            password: Joi.string().min(6).required(),
+            // cart_id: Joi.number().integer().required(),    
+            cart_id: Joi.number()
+                .integer()
+                .required()
+                .messages({
+                    'number.base': 'Cart ID must be a number.',
+                    'number.integer': 'Cart ID must be an integer.',
+                    'any.required': 'Cart ID is required.',
+                }),
+                                 
         });
 
         // schema options
@@ -70,10 +90,30 @@ class UserValidator {
         }
     }
 
-    async checkEmailValidator(req, res, next) {
+    async updateCartQuantityValidator(req, res, next) {
         // create schema object
         const schema = Joi.object({
-            email: Joi.string().email().required(),
+            // cart_id: Joi.number().integer().required(),    
+            cart_id: Joi.number()
+                .integer()
+                .required()
+                .messages({
+                    'number.base': 'Cart ID must be a number.',
+                    'number.integer': 'Cart ID must be an integer.',
+                    'any.required': 'Cart ID is required.',
+                }),
+
+            flag: Joi.number()
+                .integer()
+                .valid(0, 1)
+                .required()
+                .messages({
+                    'number.base': 'Flag must be a number.',
+                    'number.integer': 'Flag must be an integer.',
+                    'any.only': 'Flag must be either 0 or 1.',
+                    'any.required': 'Flag is required.',
+                }),
+                                 
         });
 
         // schema options
@@ -100,73 +140,7 @@ class UserValidator {
             return next();
         }
     }
-
-    async changePasswordValidator(req, res, next) {
-        // create schema object
-        const schema = Joi.object({
-            // old_password: Joi.string().required(),
-            password: Joi.string().min(6).required(),
-            confirm_password: Joi.string().min(6).required(),
-        });
-
-        // schema options
-        const options = {
-            abortEarly: false, // include all errors
-            allowUnknown: true, // ignore unknown props
-            stripUnknown: true, // remove unknown props
-        };
-
-        // validate request body against schema
-        const { error, value } = schema.validate(req.body, options);
-
-        if (error) {
-            // on fail return comma separated errors
-            const errorMessage = error.details
-                .map((details) => {
-                    return details.message;
-                })
-                .join(', ');
-            next(new ApiError(httpStatus.BAD_REQUEST, errorMessage));
-        } else {
-            // on success replace req.body with validated value and trigger next middleware function
-            req.body = value;
-            return next();
-        }
-    }
-
-    async profileupdateValidator(req, res, next) {
-        // create schema object
-        const schema = Joi.object({
-            name: Joi.string().required(),
-            email: Joi.string().email().required(),
-            phone: Joi.string().required(),
-        });
-
-        // schema options
-        const options = {
-            abortEarly: false, // include all errors
-            allowUnknown: true, // ignore unknown props
-            stripUnknown: true, // remove unknown props
-        };
-
-        // validate request body against schema
-        const { error, value } = schema.validate(req.body, options);
-
-        if (error) {
-            // on fail return comma separated errors
-            const errorMessage = error.details
-                .map((details) => {
-                    return details.message;
-                })
-                .join(', ');
-            next(new ApiError(httpStatus.BAD_REQUEST, errorMessage));
-        } else {
-            // on success replace req.body with validated value and trigger next middleware function
-            req.body = value;
-            return next();
-        }
-    }
-
+  
 }
 
-module.exports = UserValidator;
+module.exports = CartValidator;
