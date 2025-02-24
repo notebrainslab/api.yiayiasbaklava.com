@@ -8,6 +8,14 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
+            Product.hasMany(models.media, {
+                foreignKey: "model_id",
+                constraints: false,
+                scope: {
+                    model_type: "Product", // Only fetch media where model_type is 'Product'
+                },
+                as: "images", // Alias for accessing related media
+            });
             // define association here
             // User.belongsTo(models.agency, { foreignKey: 'agency_id', targetKey: 'id' });
         }

@@ -36,7 +36,7 @@ class StoreLocationService {
                 whereCondition   
             ); 
 
-            let transformData = transFormDataHelper.TransformData(locationData);
+            let transformData = await transFormDataHelper.TransformData(locationData);
                                                               
             return responseHandler.returnSuccess(httpStatus.OK, message, transformData);
         }

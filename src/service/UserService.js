@@ -43,6 +43,9 @@ class UserService {
             userData = userData.toJSON();
             delete userData.password;
             delete userData.email_verified_at;
+            delete userData.is_active;
+            delete userData.updatedAt;
+            delete userData.createdAt;
 
             return responseHandler.returnSuccess(httpStatus.CREATED, message, userData);
         } catch (e) {

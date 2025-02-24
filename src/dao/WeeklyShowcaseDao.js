@@ -7,6 +7,7 @@ const moment = require('moment');
 const WeeklyShowcase = models.weekly_showcases;
 const Product = models.shop_products;
 const ProductVote = models.shop_product_votes;
+const Media = models.media;
 
 class WeeklyShowcaseDao extends SuperDao {
     constructor() {
@@ -29,19 +30,60 @@ class WeeklyShowcaseDao extends SuperDao {
              
             const products = await Product.findAll({
                 where: { id: { [Op.in]: productIds } },
-                attributes: ['id', 'name', 'price']
+                attributes: ['id', 'name', 'price'],
+                include: [
+                    {
+                        model: Media,
+                        as: "images",
+                        attributes: ["file_name"],
+                        required: false,
+                    },
+                ],
             });
 
             const classicProducts = await Product.findAll({
                 where: { id: { [Op.in]: classicProductIds } },
-                attributes: ['id', 'name', 'price']
+                attributes: ['id', 'name', 'price'],
+                include: [
+                    {
+                        model: Media,
+                        as: "images",
+                        attributes: ["file_name"],
+                        required: false,
+                    },
+                ],
             });
 
             return results.map(result => ({
                 id: result.id,               
-                weekly_products: products.filter(p => JSON.parse(result.product_ids).includes(String(p.id))),
-                classic_products: classicProducts.filter(cp => JSON.parse(result.classic_product_ids || '[]').includes(String(cp.id)))
+                weekly_products: products
+                    .filter(p => JSON.parse(result.product_ids).includes(String(p.id)))
+                    .map(product => ({
+                        ...product.get(),
+                        images: product.images?.map(img => ({
+                            id: img.id,
+                            url: `/storage/${img.file_name}`,  // Adjust path based on storage logic
+                            collection: img.collection_name,
+                        })) || [],
+                    })),
+                classic_products: classicProducts
+                    .filter(cp => JSON.parse(result.classic_product_ids || '[]').includes(String(cp.id)))
+                    .map(classicProduct => ({
+                        ...classicProduct.get(),
+                        images: classicProduct.images?.map(img => ({
+                            id: img.id,
+                            url: `/storage/${img.file_name}`,  // Adjust path based on storage logic
+                            collection: img.collection_name,
+                        })) || [],
+                    })),
             }));
+    
+
+            // return results.map(result => ({
+            //     id: result.id,               
+            //     weekly_products: products.filter(p => JSON.parse(result.product_ids).includes(String(p.id))),
+            //     classic_products: classicProducts.filter(cp => JSON.parse(result.classic_product_ids || '[]').includes(String(cp.id)))
+            // }));
 
         } catch (error) {
             console.error('Error fetching with relation:', error);

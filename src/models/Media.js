@@ -87,17 +87,12 @@ module.exports = (sequelize, DataTypes) => {
             updatedAt: {
                 type: DataTypes.DATE,
                 field: 'updated_at'
-            },
-            deletedAt: { 
-                type: DataTypes.DATE,
-                field: 'deleted_at' // ✅ Enables soft delete (paranoid mode)
-            }
+            },            
         },
         {
             sequelize,
             modelName: 'media',
-            // tableName: 'media', // Explicitly define table name
-            paranoid: true,  // Enables soft deletes
+            // tableName: 'media', // Explicitly define table name           
             underscored: true, // Uses snake_case for timestamps
             timestamps: true,  // Enables createdAt, updatedAt
         }

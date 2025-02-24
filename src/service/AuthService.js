@@ -47,6 +47,7 @@ class AuthService {
             delete user.is_active;
             delete user.createdAt;
             delete user.updatedAt;
+            delete user.deletedAt;
 
             if (!isPasswordValid) {
                 statusCode = httpStatus.BAD_REQUEST;
@@ -85,9 +86,7 @@ class AuthService {
         return true;
     };
 
-    deleteAccount = async (req, res) => {  
-        res.send('abgg');
-        return false;         
+    deleteAccount = async (req, res) => {                 
         const refreshTokenDoc = await this.tokenDao.findOne({
             token: req.body.refresh_token,
             type: tokenTypes.REFRESH,
