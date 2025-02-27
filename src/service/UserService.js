@@ -119,14 +119,6 @@ class UserService {
             );
         }
 
-        // const isPasswordValid = await bcrypt.compare(data.old_password, user.password);
-        // user = user.toJSON();
-        // delete user.password;
-        // if (!isPasswordValid) {
-        //     statusCode = httpStatus.BAD_REQUEST;
-        //     message = 'Wrong old Password!';
-        //     return responseHandler.returnError(statusCode, message);
-        // }
         const updateUser = await this.userDao.updateWhere(
             { password: bcrypt.hashSync(data.password, 8) },
             { uuid },

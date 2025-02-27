@@ -8,7 +8,7 @@ const storeLocationController = new StoreLocationController();
 
 router.post(
     '/store-locations',
-    // auth(),    
+    auth(),    
     storeLocationController.fetchStoreLocations,
 );
 

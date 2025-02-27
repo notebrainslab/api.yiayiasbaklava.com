@@ -2,17 +2,17 @@ const Joi = require('joi');
 const httpStatus = require('http-status');
 const ApiError = require('../helper/ApiError');
 
-class ProductVoteValidator { 
-    async validateVoteRequest(req, res, next) {
+class CouponValidator {
+    async CouponListValidator(req, res, next) {
         // create schema object
         const schema = Joi.object({
-            product_id: Joi.string()               
+            membership_id: Joi.string()
                 .required()
                 .messages({
-                    'string.base': 'Product ID must be a string.',
-                    'string.empty': 'Product ID is required.',
-                    'any.required': 'Product ID is required.',
-                }),           
+                    'string.base': 'Membership Id must be a string.',
+                    'string.empty': 'Membership Id is required.',
+                    'any.required': 'Membership Id is required.',
+                }),                   
         });
 
         // schema options
@@ -39,7 +39,6 @@ class ProductVoteValidator {
             return next();
         }
     }
-
 }
 
-module.exports = ProductVoteValidator;
+module.exports = CouponValidator;
