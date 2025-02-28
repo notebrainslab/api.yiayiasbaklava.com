@@ -36,7 +36,12 @@ class StoreLocationService {
                 whereCondition   
             ); 
 
-            let transformData = transFormDataHelper.TransformData(locationData);
+            if (!locationData || locationData.length === 0)                   
+            {
+                return responseHandler.returnError(httpStatus.BAD_REQUEST, 'No data found!');
+            }
+
+            let transformData = await transFormDataHelper.TransformData(locationData);
                                                               
             return responseHandler.returnSuccess(httpStatus.OK, message, transformData);
         }

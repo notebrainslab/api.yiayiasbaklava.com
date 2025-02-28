@@ -14,6 +14,7 @@ class CategoryDao extends SuperDao {
         try {
 
             const results = await Category.findAll({
+                attributes: ['id', 'name', 'slug','description'],
                 include: {
                     model: Product,
                     through: { attributes: [] }, // Hide the join table

@@ -11,23 +11,38 @@ const returnError = (statusCode, message) => {
     return {
         statusCode,
         response: {
-            status: 0,
-            code: statusCode,
+            status: 0,            
             message,
         },
     };
 };
-const returnSuccess = (statusCode, message, data = {}) => {
-    return {
-        statusCode,
-        response: {
-            status: 1,
-            code: statusCode,
-            message,
-            data,
-        },
+
+const returnSuccess = (statusCode, message, data) => {
+    const response = {
+        status: 1,       
+        message,
     };
+
+    if (data && Object.keys(data).length > 0) {
+        response.data = data;
+    }
+
+    return { statusCode, response };
 };
+
+// const returnSuccess = (statusCode, message, data = {}) => {
+//     return {
+//         statusCode,
+//         response: {
+//             status: 1,
+//             code: statusCode,
+//             message,
+//             data,
+//         },
+//     };
+// };
+
+
 
 const getPaginationData = (rows, page, limit) => {
     const { count: totalItems, rows: data } = rows;

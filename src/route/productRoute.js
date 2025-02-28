@@ -10,7 +10,8 @@ const productValidator = new ProductValidator();
 
 router.post(
     '/product-details',
-    // auth(),    
+    auth(),  
+    productValidator.ProductDetailsValidator,   
     productController.productDetails,
 );
 

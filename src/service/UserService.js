@@ -43,6 +43,9 @@ class UserService {
             userData = userData.toJSON();
             delete userData.password;
             delete userData.email_verified_at;
+            delete userData.is_active;
+            delete userData.updatedAt;
+            delete userData.createdAt;
 
             return responseHandler.returnSuccess(httpStatus.CREATED, message, userData);
         } catch (e) {
@@ -116,14 +119,6 @@ class UserService {
             );
         }
 
-        // const isPasswordValid = await bcrypt.compare(data.old_password, user.password);
-        // user = user.toJSON();
-        // delete user.password;
-        // if (!isPasswordValid) {
-        //     statusCode = httpStatus.BAD_REQUEST;
-        //     message = 'Wrong old Password!';
-        //     return responseHandler.returnError(statusCode, message);
-        // }
         const updateUser = await this.userDao.updateWhere(
             { password: bcrypt.hashSync(data.password, 8) },
             { uuid },

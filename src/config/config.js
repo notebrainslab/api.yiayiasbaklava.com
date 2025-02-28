@@ -7,11 +7,12 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 const envValidation = Joi.object()
     .keys({
         NODE_ENV: Joi.string().valid('development', 'production', 'test').required(),
-        PORT: Joi.number(),
-        DB_HOST: Joi.string().required(),
+        PORT: Joi.number().default(3000),
+        DB_HOST: Joi.string().default('localhost'),
         DB_USER: Joi.string().required(),
-        DB_PASS: Joi.string().required(),
+        DB_PASS: Joi.string().allow('').default(''),
         DB_NAME: Joi.string().required(),
+        DB_PORT: Joi.number().default(3306),
         JWT_SECRET: Joi.string().required().description('JWT secret key'),
         JWT_ACCESS_EXPIRATION_MINUTES: Joi.number()
             .default(1000)
@@ -50,6 +51,7 @@ module.exports = {
     dbUser: envVar.DB_USER,
     dbPass: envVar.DB_PASS,
     dbName: envVar.DB_NAME,
+    dbPort: envVar.DB_PORT,
     jwt: {
         secret: envVar.JWT_SECRET,
         accessExpirationMinutes: envVar.JWT_ACCESS_EXPIRATION_MINUTES,
