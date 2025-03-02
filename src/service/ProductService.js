@@ -2,6 +2,7 @@ const httpStatus = require('http-status');
 const { Op } = require('sequelize');
 const ProductDao = require('../dao/ProductDao');
 const FavouriteDao = require('../dao/FavouriteDao');
+const MediaDao = require('../dao/MediaDao');
 const { tokenTypes } = require('../config/tokens');
 const responseHandler = require('../helper/responseHandler');
 const logger = require('../config/logger');
@@ -12,6 +13,7 @@ class ProductService {
     constructor() {
         this.ProductDao = new ProductDao();                  
         this.favouriteDao = new FavouriteDao();                  
+        this.mediaDao = new MediaDao();                  
     }
     /**
      * Create a user
@@ -26,19 +28,17 @@ class ProductService {
            
             let productId = product.product_id;         
             let productData = await this.ProductDao.findById(productId); 
+            let imageData = await this.mediaDao.fetchImages(productId, 'App\\Models\\Shop\\Product');            
             productData = productData.toJSON(); 
-            delete productData.shop_brand_id;
-            delete productData.sku;
-            delete productData.barcode;
-            delete productData.security_stock;
-            delete productData.featured;           
-            delete productData.is_visible;           
-            delete productData.backorder;           
-            delete productData.published_at;           
-            delete productData.seo_title;           
-            delete productData.seo_description;           
-            delete productData.createdAt;           
-            delete productData.updatedAt;                                 
+            const fieldsToRemove = [
+                'shop_brand_id', 'sku', 'barcode', 'security_stock', 
+                'featured', 'is_visible', 'backorder', 'published_at', 
+                'seo_title', 'seo_description', 'createdAt', 'updatedAt'
+            ];
+            
+            fieldsToRemove.forEach(field => delete productData[field]);
+
+            productData.images = imageData;
                                                               
             return responseHandler.returnSuccess(httpStatus.OK, message, productData);
         }
@@ -65,9 +65,26 @@ class ProductService {
             let products = await this.ProductDao.findByWhere(
                 whereCondition,
                 attributes                
-            );                       
+            ); 
+                        
+            // for (let product of products) {
+            //     let imageData = await this.mediaDao.fetchImages(product.id, 'App\\Models\\Shop\\Product');                
+            //     console.log(`Image Data for product ${product.id}:`, JSON.stringify(imageData, null, 2));               
+            //     product.images = Array.isArray(imageData) ? imageData : []; 
+            // }
 
-            return responseHandler.returnSuccess(httpStatus.OK, message, products);
+            let productWithImages = await Promise.all(products.map(async (product) => {
+                let plainProduct = product.toJSON(); // Ensure we can modify it
+                let imageData = await this.mediaDao.fetchImages(plainProduct.id, 'App\\Models\\Shop\\Product'); 
+                
+                console.log(`Image Data for product ${plainProduct.id}:`, JSON.stringify(imageData, null, 2));
+                
+                plainProduct.images = Array.isArray(imageData) ? imageData : []; 
+    
+                return plainProduct; // Return updated object
+            }));
+            
+            return responseHandler.returnSuccess(httpStatus.OK, message, productWithImages);
         }
         catch (e) {
             console.log(e);
@@ -111,10 +128,14 @@ class ProductService {
             const message = 'Data fetch successfullyasdA!';              
             
             let favouriteProducts = await this.favouriteDao.fetchFavouriteProducts(userId);  
-            
-            let transformData = transFormDataHelper.TransformData(favouriteProducts);
 
-            return responseHandler.returnSuccess(httpStatus.OK, message, transformData);
+            // if (!Array.isArray(favouriteProducts)) {
+            //     favouriteProducts = []; // Default to an empty array to avoid errors
+            // }
+            
+            // let transformData = transFormDataHelper.TransformData(favouriteProducts);
+
+            return responseHandler.returnSuccess(httpStatus.OK, message, favouriteProducts);
         }
         catch (e) {
             console.log(e);

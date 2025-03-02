@@ -2,8 +2,13 @@ const SuperDao = require('./SuperDao');
 const { Op, Sequelize } = require('sequelize');
 const models = require('../models');
 
+require('dotenv').config();
+
+const IMAGE_URL = process.env.IMAGE_URL
+
 const Cart = models.shop_add_to_carts;
 const Product = models.shop_products;
+const Media = models.media;
 
 class CartDao extends SuperDao {
     constructor() {
@@ -56,6 +61,56 @@ class CartDao extends SuperDao {
         }
     }
 
+    // async getCartDetails(userId) {
+    //     try {  
+    //         const results = await Cart.findAll({
+    //             where: {
+    //                 shop_customer_id: userId,
+    //             },
+    //             attributes: [
+    //               'id',                  
+    //               'quantity',                  
+    //               [Sequelize.col('shop_add_to_carts.price'), 'price'], // Explicit table
+    //               [Sequelize.literal('`shop_add_to_carts`.`price` * `shop_add_to_carts`.`quantity`'), 'total_price']
+    //             ],
+    //             include: [
+    //               {
+    //                 model: Product,
+    //                 attributes: ['id', 'name'],
+    //                 include: [
+    //                     {
+    //                         model: Media,
+    //                         as: 'images', // Match the alias defined in Product model
+    //                         attributes: ['file_name', 'collection_name'],
+    //                         required: false, // Allow products without images
+    //                         where: { model_type: 'App\\Models\\Shop\\Product' }, // Ensure it's for products
+    //                     },
+    //                 ],
+    //               }
+    //             ]
+    //         });
+
+    //         const cartWithImages = results.map(cart => {
+    //             let cartItem = cart.toJSON(); 
+                
+    //             // Ensure images are formatted properly
+    //             if (cartItem.Product && cartItem.Product.images) {
+    //                 cartItem.Product.images = cartItem.Product.images.map(image => ({
+    //                     url: `https://yiayiasbaklava.notebrains.com/storage/product-images/${image.file_name}`,
+    //                     collection: image.collection_name
+    //                 }));
+    //             }
+    
+    //             return cartItem;
+    //         });
+                 
+    //         return cartWithImages;           
+    //     } catch (error) {
+    //         console.error('Error fetching with relation:', error);
+    //         throw error;
+    //     }
+    // }
+
     async getCartDetails(userId) {
         try {  
             const results = await Cart.findAll({
@@ -63,25 +118,50 @@ class CartDao extends SuperDao {
                     shop_customer_id: userId,
                 },
                 attributes: [
-                  'id',                  
-                  'quantity',                  
-                  [Sequelize.col('shop_add_to_carts.price'), 'price'], // Explicit table
-                  [Sequelize.literal('`shop_add_to_carts`.`price` * `shop_add_to_carts`.`quantity`'), 'total_price']
+                    'id',                  
+                    'quantity',                  
+                    [Sequelize.col('shop_add_to_carts.price'), 'price'], 
+                    [Sequelize.literal('`shop_add_to_carts`.`price` * `shop_add_to_carts`.`quantity`'), 'total_price']
                 ],
                 include: [
-                  {
-                    model: Product,
-                    attributes: ['id', 'name'],
-                  }
+                    {
+                        model: Product,
+                        as: 'shop_product', // Use the alias matching your API response
+                        attributes: ['id', 'name'],
+                        include: [
+                            {
+                                model: Media,
+                                as: 'images', 
+                                attributes: ['file_name', 'collection_name'],
+                                required: false, 
+                                where: { model_type: 'App\\Models\\Shop\\Product' },
+                            },
+                        ],
+                    }
                 ]
             });
+    
+            const cartWithImages = results.map(cart => {
+                let cartItem = cart.toJSON(); 
+                
+                // Ensure images are formatted properly
+                if (cartItem.shop_product && cartItem.shop_product.images) {
+                    cartItem.shop_product.images = cartItem.shop_product.images.map(image => ({
+                        url: `${IMAGE_URL}/storage/${image.collection_name} /${image.file_name}`,
+                        collection: image.collection_name
+                    }));
+                }
+    
+                return cartItem;
+            });
                  
-            return results;           
+            return cartWithImages;           
         } catch (error) {
-            console.error('Error fetching with relation:', error);
+            console.error('Error fetching cart details:', error);
             throw error;
         }
     }
+    
     
 }
 

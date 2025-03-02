@@ -17,7 +17,8 @@ class HomeController {
     fetchHomeData = async (req, res) => {
         try {              
             const homeData = await this.homeService.fetchData(); 
-            
+            // res.send('test');
+            // return false;
             const { status } = homeData.response;            
             const { message, data } = homeData.response;
             

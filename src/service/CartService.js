@@ -136,9 +136,7 @@ class CartService {
     cartDetails = async (userId) => { 
         try{
             let message = 'Data fetch successfully'; 
-                                                
-            
-
+                                                            
             let cartData = await this.cartDao.getCartDetails(userId); 
 
             if (!cartData) {

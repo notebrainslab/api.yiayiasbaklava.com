@@ -16,8 +16,7 @@ class ProductController {
    
     productDetails = async (req, res) => {
         try {                   
-            const productDetails = await this.productService.fetchProductDetails(req.body);  
-            
+            const productDetails = await this.productService.fetchProductDetails(req.body);              
             const { status } = productDetails.response;            
             const { message, data } = productDetails.response;
             

@@ -17,7 +17,8 @@ class CategoryController {
     fetchCategoryWiseProduct = async (req, res) => {
         try {            
             const categoryWithProduct = await this.categoryService.fetchCategoryWithProduct(); 
-           
+            // res.send('test');
+            // return false;
             const { status } = categoryWithProduct.response;            
             const { message, data } = categoryWithProduct.response;
             

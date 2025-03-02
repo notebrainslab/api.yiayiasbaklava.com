@@ -21,7 +21,9 @@ class CategoryService {
         try{
             const message = 'Data fetch successfully!';            
             
-            let productData = await this.CategoryDao.fetchCategoryWithProductRelation(); 
+            let productData = await this.CategoryDao.fetchCategoryWithProductRelation();
+            // console.log(productData)
+            // return false;
                                                               
             return responseHandler.returnSuccess(httpStatus.OK, message, productData);
         }

@@ -34,6 +34,8 @@ class HomeService {
             };
                      
             let homeData = await this.WeeklyShowcaseDao.fetchWithRelation(whereCondition); 
+            // console.log(homeData);
+            // return false;
                                                             
             return responseHandler.returnSuccess(httpStatus.OK, message, homeData);
         }
