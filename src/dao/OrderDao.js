@@ -17,7 +17,7 @@ class OrderDao extends SuperDao {
                 include: {
                     model: Product,
                     through: { attributes: [] }, // Hide the join table
-                    attributes: ['id', 'name', 'price']
+                    attributes: [['id', 'product_id'], 'name', 'price']
                 },
                 attributes: [
                     'id',
@@ -30,7 +30,8 @@ class OrderDao extends SuperDao {
                 order: [['id', 'DESC']]             
             });
             
-            return results;           
+            return results.length > 0 ? results : [];
+            // return results;           
         } catch (error) {
             console.error('Error fetching with relation:', error);
             throw error;

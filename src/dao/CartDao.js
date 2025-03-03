@@ -132,7 +132,7 @@ class CartDao extends SuperDao {
                             {
                                 model: Media,
                                 as: 'images', 
-                                attributes: ['file_name', 'collection_name'],
+                                attributes: ['id','file_name', 'collection_name'],
                                 required: false, 
                                 where: { model_type: 'App\\Models\\Shop\\Product' },
                             },
@@ -147,8 +147,7 @@ class CartDao extends SuperDao {
                 // Ensure images are formatted properly
                 if (cartItem.shop_product && cartItem.shop_product.images) {
                     cartItem.shop_product.images = cartItem.shop_product.images.map(image => ({
-                        url: `${IMAGE_URL}/storage/${image.collection_name} /${image.file_name}`,
-                        collection: image.collection_name
+                        url: `${IMAGE_URL}/storage/${image.id}/${image.file_name}`,                       
                     }));
                 }
     

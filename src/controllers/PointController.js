@@ -32,7 +32,7 @@ class PointController{
     fetchMembershipTier = async (req, res) => {
         try {              
             const membershipTier = await this.pointService.fetchMembershipTier(req.userId); 
-            
+           
             const { status } = membershipTier.response;            
             const { message, data } = membershipTier.response;
             

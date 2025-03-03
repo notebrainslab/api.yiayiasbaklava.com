@@ -14,16 +14,15 @@ class MediaDao extends SuperDao {
     
     async fetchImages(product_id, model_type) {
         try {   
-            const results  = await Media.findOne({
+            const results  = await Media.findAll({
                 where: { model_id: product_id, model_type: model_type },
-                attributes: ['collection_name', 'file_name']              
+                attributes: ['id', 'collection_name', 'file_name']              
             });
                        
-            return results
-            ? [{
-                url: `${IMAGE_URL}/storage/${results.collection_name}/${results.file_name}`,
-                collection: results.collection_name
-            }]
+            return results.length > 0
+            ? results.map(image => ({
+                url: `${process.env.IMAGE_URL}/storage/${image.id}/${image.file_name}`
+            }))
             : [];
 
         } catch (error) {

@@ -33,9 +33,7 @@ class HomeService {
                 to_date: { [Op.gte]: currentDate }
             };
                      
-            let homeData = await this.WeeklyShowcaseDao.fetchWithRelation(whereCondition); 
-            // console.log(homeData);
-            // return false;
+            let homeData = await this.WeeklyShowcaseDao.fetchWithRelation(whereCondition);           
                                                             
             return responseHandler.returnSuccess(httpStatus.OK, message, homeData);
         }

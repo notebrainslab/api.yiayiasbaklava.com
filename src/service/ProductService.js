@@ -31,7 +31,7 @@ class ProductService {
             let imageData = await this.mediaDao.fetchImages(productId, 'App\\Models\\Shop\\Product');            
             productData = productData.toJSON(); 
             const fieldsToRemove = [
-                'shop_brand_id', 'sku', 'barcode', 'security_stock', 
+                'id', 'shop_brand_id', 'sku', 'barcode', 'security_stock', 
                 'featured', 'is_visible', 'backorder', 'published_at', 
                 'seo_title', 'seo_description', 'createdAt', 'updatedAt'
             ];
@@ -39,7 +39,7 @@ class ProductService {
             fieldsToRemove.forEach(field => delete productData[field]);
 
             productData.images = imageData;
-                                                              
+                                                          
             return responseHandler.returnSuccess(httpStatus.OK, message, productData);
         }
         catch (e) {
@@ -57,7 +57,7 @@ class ProductService {
                 type_of_product: 0 ,                
             };
 
-            const attributes = ['id', 'name', 'slug', 'price', 'qty', 'description', 'weight_value'
+            const attributes = [['id', 'product_id'], 'name', 'slug', 'price', 'qty', 'description', 'weight_value'
                 , 'weight_unit', 'height_value', 'height_unit', 'width_value', 'width_unit'
                 , 'depth_value', 'depth_unit', 'volume_value', 'volume_unit'
             ];
@@ -66,19 +66,11 @@ class ProductService {
                 whereCondition,
                 attributes                
             ); 
-                        
-            // for (let product of products) {
-            //     let imageData = await this.mediaDao.fetchImages(product.id, 'App\\Models\\Shop\\Product');                
-            //     console.log(`Image Data for product ${product.id}:`, JSON.stringify(imageData, null, 2));               
-            //     product.images = Array.isArray(imageData) ? imageData : []; 
-            // }
-
+                                   
             let productWithImages = await Promise.all(products.map(async (product) => {
                 let plainProduct = product.toJSON(); // Ensure we can modify it
-                let imageData = await this.mediaDao.fetchImages(plainProduct.id, 'App\\Models\\Shop\\Product'); 
-                
-                console.log(`Image Data for product ${plainProduct.id}:`, JSON.stringify(imageData, null, 2));
-                
+                let imageData = await this.mediaDao.fetchImages(plainProduct.product_id, 'App\\Models\\Shop\\Product'); 
+                                                
                 plainProduct.images = Array.isArray(imageData) ? imageData : []; 
     
                 return plainProduct; // Return updated object
@@ -128,13 +120,7 @@ class ProductService {
             const message = 'Data fetch successfullyasdA!';              
             
             let favouriteProducts = await this.favouriteDao.fetchFavouriteProducts(userId);  
-
-            // if (!Array.isArray(favouriteProducts)) {
-            //     favouriteProducts = []; // Default to an empty array to avoid errors
-            // }
             
-            // let transformData = transFormDataHelper.TransformData(favouriteProducts);
-
             return responseHandler.returnSuccess(httpStatus.OK, message, favouriteProducts);
         }
         catch (e) {

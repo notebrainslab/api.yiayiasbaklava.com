@@ -22,16 +22,19 @@ class AddressValidator {
                     'any.required': 'City is required.',
                 }),
         
-            zip: Joi.string()
-                .pattern(/^\d{5}(-\d{4})?$/) // Allows 5-digit or ZIP+4 format
+            zip: Joi.number()
+                .integer()
+                .min(10000)
+                .max(99999)
                 .required()
                 .messages({
-                    'string.base': 'ZIP code must be a string.',
-                    'string.empty': 'ZIP code is required.',
+                    'number.base': 'ZIP code must be a number.',
+                    'number.empty': 'ZIP code is required.',
                     'any.required': 'ZIP code is required.',
-                    'string.pattern.base': 'ZIP code must be a valid US ZIP code (e.g., 12345 or 12345-6789).',
+                    'number.min': 'ZIP code must be a valid 5-digit US ZIP code.',
+                    'number.max': 'ZIP code must be a valid 5-digit US ZIP code.',
                 }),
-        
+                    
             state: Joi.string()
                 .required()
                 .messages({

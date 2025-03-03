@@ -3,17 +3,23 @@ const { Op } = require('sequelize');
 const PointDao = require('../dao/PointDao');
 const WeeklyShowcaseDao = require('../dao/WeeklyShowcaseDao');
 const ProductVoteDao = require('../dao/ProductVoteDao');
+const MembershipTierDao = require('../dao/MembershipTierDao');
 // const TokenDao = require('../dao/TokenDao');
 const { tokenTypes } = require('../config/tokens');
 const responseHandler = require('../helper/responseHandler');
 const logger = require('../config/logger');
 const { userConstant } = require('../config/constant');
 
+require('dotenv').config();
+
+const IMAGE_URL = process.env.IMAGE_URL
+
 class PointService {
     constructor() {
         this.pointDao = new PointDao();                  
         this.productVoteDao = new ProductVoteDao();                  
         this.weeklyShowcaseDao = new WeeklyShowcaseDao();                  
+        this.membershipTierDao = new MembershipTierDao();                  
     }
     /**
      * Create a user
@@ -45,7 +51,7 @@ class PointService {
             let membershipTierData = await this.membershipTierDao.findAll(
                 { where: { status : 1}}
             ); 
-            
+                       
             membershipTierData = membershipTierData.reduce((acc, tier) => {
                 const tierJson = tier.toJSON();
                            
@@ -55,6 +61,10 @@ class PointService {
                 delete tierJson.created_at;
                 delete tierJson.is_default;                             
                 delete tierJson.status;
+
+                tierJson.image = {
+                    url : `${IMAGE_URL}/storage/${tierJson.image}`,
+                }
                            
                 acc[tierJson.name] = tierJson;
                 return acc;
@@ -75,7 +85,7 @@ class PointService {
             const message = 'Data fetch successfully!';                        
                         
             let leaderboardData = await this.weeklyShowcaseDao.fetchWeeklyTopVotedProducts();
-            
+           
             return responseHandler.returnSuccess(httpStatus.OK, message, leaderboardData);
         }
         catch (e) {

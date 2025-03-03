@@ -8,21 +8,27 @@ class ReviewValidator {
         const schema = Joi.object({
             product_id: Joi.number()
                 .integer()
+                .min(1) // Ensures a valid positive product ID
                 .required()
                 .messages({
                     'number.base': 'Product ID must be a number.',
+                    'number.empty': 'Product ID is required.',
+                    'any.required': 'Product ID is required.',                
                     'number.integer': 'Product ID must be an integer.',
-                    'any.required': 'Product ID is required.',
+                    'number.min': 'Product ID must be a positive number.',
                 }),
 
             quantity: Joi.number()
                 .integer()
+                .min(1) // Ensures quantity is at least 1
                 .required()
                 .messages({
                     'number.base': 'Quantity must be a number.',
-                    'number.integer': 'Quantity must be an integer.',
+                    'number.empty': 'Quantity is required.',
                     'any.required': 'Quantity is required.',
-                }),            
+                    'number.integer': 'Quantity must be an integer.',
+                    'number.min': 'Quantity must be at least 1.',
+                })            
         });
 
         // schema options

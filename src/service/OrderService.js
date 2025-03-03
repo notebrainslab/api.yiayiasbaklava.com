@@ -23,11 +23,14 @@ class OrderService {
 
     fetchOrderHistory = async (userId) => { 
         try{
-            const message = 'Data fetch successfully!';            
-            // const currentDate = new Date();
+            let message = 'Data fetch successfully!';                        
                           
             let orderHistoryData = await this.orderDao.fetchOrdersWithTotalAmount(userId); 
-                                                              
+            if(!orderHistoryData || orderHistoryData.length == 0)
+            {
+                message = 'No data found.';                
+            }
+                 
             return responseHandler.returnSuccess(httpStatus.OK, message, orderHistoryData);
         }
         catch (e) {

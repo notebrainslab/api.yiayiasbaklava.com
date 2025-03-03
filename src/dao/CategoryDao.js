@@ -41,17 +41,17 @@ class CategoryDao extends SuperDao {
     async fetchCategoryWithProductRelation() {
         try {
             const results = await Category.findAll({
-                attributes: ['id', 'name', 'slug', 'description'],
+                attributes: [['id', 'category_id'], 'name', 'slug', 'description'],
                 include: [
                     {
                         model: Product,
                         through: { attributes: [] }, // Hide pivot table
-                        attributes: ['id', 'name', 'slug', 'price', 'qty', 'description'],
+                        attributes: [['id', 'product_id'], 'name', 'slug', 'price', 'qty', 'description'],
                         include: [
                             {
                                 model: Media,
                                 as: 'images', // Match the alias defined in Product model
-                                attributes: ['model_id', 'file_name', 'collection_name'],
+                                attributes: ['id', 'model_id', 'file_name', 'collection_name'],
                                 required: false, // Allow products without images
                                 where: { model_type: 'App\\Models\\Shop\\Product' }, // Ensure it's for products
                             },
@@ -73,8 +73,7 @@ class CategoryDao extends SuperDao {
                     return {
                         ...product,
                         images: product.images.map(image => ({
-                            url: `${IMAGE_URL}/storage/${image.collection_name}/${image.file_name}`,
-                            collection: image.collection_name
+                            url: `${IMAGE_URL}/storage/${image.id}/${image.file_name}`,                           
                         }))
                     };
                 });

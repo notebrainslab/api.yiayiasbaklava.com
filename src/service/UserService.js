@@ -6,6 +6,10 @@ const responseHandler = require('../helper/responseHandler');
 const logger = require('../config/logger');
 const { userConstant } = require('../config/constant');
 
+require('dotenv').config();
+
+const IMAGE_URL = process.env.IMAGE_URL 
+
 class UserService {
     constructor() {
         this.userDao = new UserDao();
@@ -84,6 +88,33 @@ class UserService {
             return responseHandler.returnError(httpStatus.BAD_REQUEST, 'Something went wrong!');
         }
     };
+
+    fetchUser = async (userId) => {
+        try{            
+            let message = 'Profile fetched successfully!';
+
+            let userInfo = await this.userDao.findById(userId); 
+            userInfo = userInfo.toJSON();
+
+            delete userInfo.password;
+            delete userInfo.email_verified_at;
+            delete userInfo.deletedAt;
+            delete userInfo.gender;
+            delete userInfo.is_active;
+            delete userInfo.createdAt;
+            delete userInfo.updatedAt;
+
+            userInfo.photo = {
+                url: `${IMAGE_URL}/storage/profile/${userInfo.photo ?? ''}`,
+            }
+                        
+            return responseHandler.returnSuccess(httpStatus.CREATED, message, userInfo);
+        }
+        catch(e)
+        {
+
+        }
+    }
 
     /**
      * Get user

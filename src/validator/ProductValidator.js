@@ -6,13 +6,17 @@ class ProductValidator {
     async ProductDetailsValidator(req, res, next) {
         // create schema object
         const schema = Joi.object({
-            product_id: Joi.string()            
-            .required()
-            .messages({
-                'string.base': 'Product ID must be a string.',
-                'string.empty': 'Product ID is required.',
-                'any.required': 'Product ID is required.',                
-            }),                    
+            product_id: Joi.number()
+                .integer()
+                .min(1) // Ensures a valid positive product ID
+                .required()
+                .messages({
+                    'number.base': 'Product ID must be a number.',
+                    'number.empty': 'Product ID is required.',
+                    'any.required': 'Product ID is required.',                
+                    'number.integer': 'Product ID must be an integer.',
+                    'number.min': 'Product ID must be a positive number.',
+                }),                  
         });
 
         // schema options
@@ -43,13 +47,17 @@ class ProductValidator {
     async addToFavuritesValidator(req, res, next) {
         // create schema object
         const schema = Joi.object({
-            product_id: Joi.string()            
+            product_id: Joi.number()
+                .integer()
+                .min(1) // Ensures a valid positive product ID
                 .required()
                 .messages({
-                    'string.base': 'Product ID must be a string.',
-                    'string.empty': 'Product ID is required.',
-                    'any.required': 'Product ID is required.',
-                }),                  
+                    'number.base': 'Product ID must be a number.',
+                    'number.empty': 'Product ID is required.',
+                    'any.required': 'Product ID is required.',                
+                    'number.integer': 'Product ID must be an integer.',
+                    'number.min': 'Product ID must be a positive number.',
+                }),                   
         });
 
         // schema options

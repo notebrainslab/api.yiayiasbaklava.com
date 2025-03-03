@@ -8,6 +8,12 @@ const auth = require('../middlewares/auth');
 const profileController = new ProfileController();
 const userValidator = new UserValidator();
 
+router.get(
+    '/fetch-profile',
+    auth(),    
+    profileController.fetchProfile,
+);
+
 router.put(
     '/profile-update',
     auth(),

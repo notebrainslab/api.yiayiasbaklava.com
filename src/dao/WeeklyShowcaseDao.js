@@ -97,15 +97,14 @@ class WeeklyShowcaseDao extends SuperDao {
     
             const media = await Media.findAll({
                 where: { model_id: { [Op.in]: Array.from(allProductIds) } },
-                attributes: ['model_id', 'file_name', 'collection_name'],
+                attributes: ['id', 'model_id', 'file_name', 'collection_name'],
             });
     
             // Convert media array into a map for quick lookup
             const mediaMap = media.reduce((acc, img) => {
                 if (!acc[img.model_id]) acc[img.model_id] = [];
                 acc[img.model_id].push({
-                    url: `${IMAGE_URL}/storage/${img.collection_name}/${img.file_name}`, // Adjust path based on storage logic
-                    collection: img.collection_name,
+                    url: `${IMAGE_URL}/storage/${img.id}/${img.file_name}`, // Adjust path based on storage logic                    
                 });
                 return acc;
             }, {});
@@ -135,8 +134,7 @@ class WeeklyShowcaseDao extends SuperDao {
             throw error;
         }
     };
-    
-    
+        
     async fetchWeeklyTopVotedProducts() {
         try {
             const currentDate = moment().format('YYYY-MM-DD');
@@ -177,12 +175,34 @@ class WeeklyShowcaseDao extends SuperDao {
                   {
                     model: Product,
                     attributes: ['name', 'price', 'description'],
+                    
                   },
                 ],
                 raw: true,
             });
           
-            return topVotedProducts;
+            const imageWithProductDetails = await Promise.all(
+                topVotedProducts.map(async (product) => {
+                    if (product.product_id) {
+                        let mediaList = await Media.findAll({ 
+                            where: { model_id: product.product_id }
+                        });
+                        
+                        // Add media data to product if needed
+                        if (mediaList.length > 0) {
+                            product.image = mediaList.map(media => ({
+                                url: `${process.env.IMAGE_URL}/storage/${media.collection_name}/${media.file_name}`
+                            }));
+                        } else {
+                            product.image = []; // Return an empty array if no media found
+                        }
+                    }
+                                
+                    return product; // Return modified product
+                })
+            );
+
+            return imageWithProductDetails;          
 
         } catch (error) {
             console.error('Error fetching with relation:', error);
